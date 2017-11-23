@@ -286,3 +286,6 @@ __pycache__/
 *.btm.cs
 *.odx.cs
 *.xsd.cs
+*.DNG
+U4Mapper/Maps/CHARSET.EGA
+U4Mapper/Maps/WORLD.MAP
