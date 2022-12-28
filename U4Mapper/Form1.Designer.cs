@@ -49,7 +49,7 @@
             this.lstRooms = new System.Windows.Forms.ListBox();
             this.label1 = new System.Windows.Forms.Label();
             this.panel2 = new System.Windows.Forms.Panel();
-            this.pictureBox2 = new System.Windows.Forms.PictureBox();
+            this.picRoom = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
@@ -58,7 +58,7 @@
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
             this.panel2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picRoom)).BeginInit();
             this.SuspendLayout();
             // 
             // pictureBox1
@@ -79,7 +79,7 @@
             this.tabControl1.Location = new System.Drawing.Point(0, 24);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(1060, 451);
+            this.tabControl1.Size = new System.Drawing.Size(919, 423);
             this.tabControl1.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
             this.tabControl1.TabIndex = 2;
             // 
@@ -99,7 +99,7 @@
             this.tabPage1.Location = new System.Drawing.Point(4, 28);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(1052, 419);
+            this.tabPage1.Size = new System.Drawing.Size(911, 391);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Dungeons";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -196,7 +196,7 @@
             this.stuffToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(1060, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(919, 24);
             this.menuStrip1.TabIndex = 8;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -257,8 +257,9 @@
             this.lstRooms.FormattingEnabled = true;
             this.lstRooms.Location = new System.Drawing.Point(576, 32);
             this.lstRooms.Name = "lstRooms";
-            this.lstRooms.Size = new System.Drawing.Size(80, 238);
+            this.lstRooms.Size = new System.Drawing.Size(80, 173);
             this.lstRooms.TabIndex = 16;
+            this.lstRooms.SelectedIndexChanged += new System.EventHandler(this.lstRooms_SelectedIndexChanged);
             // 
             // label1
             // 
@@ -274,26 +275,26 @@
             this.panel2.AutoScroll = true;
             this.panel2.BackColor = System.Drawing.Color.White;
             this.panel2.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.panel2.Controls.Add(this.pictureBox2);
+            this.panel2.Controls.Add(this.picRoom);
             this.panel2.Location = new System.Drawing.Point(664, 32);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(344, 344);
+            this.panel2.Size = new System.Drawing.Size(232, 240);
             this.panel2.TabIndex = 18;
             // 
-            // pictureBox2
+            // picRoom
             // 
-            this.pictureBox2.BackColor = System.Drawing.Color.White;
-            this.pictureBox2.Location = new System.Drawing.Point(4, 4);
-            this.pictureBox2.Name = "pictureBox2";
-            this.pictureBox2.Size = new System.Drawing.Size(524, 468);
-            this.pictureBox2.TabIndex = 0;
-            this.pictureBox2.TabStop = false;
+            this.picRoom.BackColor = System.Drawing.Color.White;
+            this.picRoom.Location = new System.Drawing.Point(4, 4);
+            this.picRoom.Name = "picRoom";
+            this.picRoom.Size = new System.Drawing.Size(220, 228);
+            this.picRoom.TabIndex = 0;
+            this.picRoom.TabStop = false;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1060, 475);
+            this.ClientSize = new System.Drawing.Size(919, 447);
             this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
@@ -311,7 +312,7 @@
             this.panel1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).EndInit();
             this.panel2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picRoom)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -338,7 +339,7 @@
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.TrackBar trackBar1;
         private System.Windows.Forms.Panel panel2;
-        private System.Windows.Forms.PictureBox pictureBox2;
+        private System.Windows.Forms.PictureBox picRoom;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ListBox lstRooms;
     }
