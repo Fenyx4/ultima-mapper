@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
+using System.IO;
 using System.Text;
 using System.Windows.Forms;
-using System.IO;
 using System.Windows.Media.Imaging;
 
 namespace U4Mapper
@@ -16,7 +13,11 @@ namespace U4Mapper
         private const float tile_size = 16.0f;
         private float tile_scale = 1.0f;
         private Dictionary<int,Bitmap> tiles;
-        private String currentFile;
+        private String currentFile = "";
+        private string maps_path = "Maps\\";
+        private bool drawStyle = false;
+        private int level = 1;
+        private Imagemapper imgMapper = new Imagemapper();
 
         public Form1()
         {
@@ -25,25 +26,24 @@ namespace U4Mapper
             LoadTiles();
             Bitmap image = new Bitmap((int)(8.0f * tile_size * tile_scale), (int)(8.0f * tile_size * tile_scale));
             pictureBox1.Image = image;
-            LoadDungeons();
+            LoadDungeonFiles();
             DrawLevel(1);
-
             //LoadWorldMap();
             //DrawCharset();
         }
 
         private void LoadDungeons()
         {
-            comboBox1.Items.Add("Abyss");
-            comboBox1.Items.Add("Covetous");
-            comboBox1.Items.Add("Deceit");
-            comboBox1.Items.Add("Despise");
-            comboBox1.Items.Add("Destard");
-            comboBox1.Items.Add("Hythloth");
-            comboBox1.Items.Add("Shame");
-            comboBox1.Items.Add("Wrong");
+            cmbDungeons.Items.Add("Abyss");
+            cmbDungeons.Items.Add("Covetous");
+            cmbDungeons.Items.Add("Deceit");
+            cmbDungeons.Items.Add("Despise");
+            cmbDungeons.Items.Add("Destard");
+            cmbDungeons.Items.Add("Hythloth");
+            cmbDungeons.Items.Add("Shame");
+            cmbDungeons.Items.Add("Wrong");
 
-            comboBox1.SelectedIndex = 0;
+            cmbDungeons.SelectedIndex = 0;
 
             currentFile = "ABYSS.DNG";
         }
@@ -116,7 +116,7 @@ namespace U4Mapper
             tiles.Add(0xFF, tile);
         }
 
-        private void DrawTile(Bitmap image, int x, int y, int tileNum, StringBuilder str)
+        private void DrawTile(Bitmap image, int x, int y, int tileNum, Imagemapper str)
         {
             int x_offset = (int)(x * tile_size * tile_scale);
             int y_offset = (int)(y * tile_size * tile_scale);
@@ -130,197 +130,22 @@ namespace U4Mapper
             Graphics g = Graphics.FromImage(image);
             g.DrawImage(tile, x_offset, y_offset, tile_size * tile_scale, tile_size * tile_scale);
 
-            switch (tileNum)
+            str.AddTile(tileNum, x_offset, y_offset);
+
+            if (tileNum >= 0xD0 && tileNum <= 0xDF)
             {
-                case 0x10: // Ladder Up
-                    if (level != 1)
-                    {
-                        writeRect(str, x_offset, y_offset);
-                        str.Append("[[");
-                        str.Append(comboBox1.Text);
-                        str.Append(" (Ultima IV)|U4-");
-                        str.Append(comboBox1.Text);
-                        str.Append("-L");
-                        str.Append((level - 1).ToString());
-                        str.AppendLine("]]");
-                    }
-                    else
-                    {
-                        writeRect(str, x_offset, y_offset);
-                        str.Append("[[");
-                        str.Append(comboBox1.Text);
-                        str.AppendLine(" (Ultima IV)|Exit]]");
-                    }
-                    break;
-                case 0x20: //Ladder Down
-                    writeRect(str, x_offset, y_offset);
-                    str.Append("[[");
-                    str.Append(comboBox1.Text);
-                    str.Append(" (Ultima IV)|U4-");
-                    str.Append(comboBox1.Text);
-                    str.Append("-L");
-                    str.Append((level + 1).ToString());
-                    str.AppendLine("]]");
-                    break;
-                case 0x30: //Up & Down ladder
-                    if (level == 1)
-                    {
-                        writeRect(str, x_offset, y_offset);
-                        str.Append("[[");
-                        str.Append(comboBox1.Text);
-                        str.Append(" (Ultima IV)|U4-");
-                        str.Append(comboBox1.Text);
-                        str.Append("-L");
-                        str.Append((level + 1).ToString());
-                        str.AppendLine("]]");
-                    }
-                    else
-                    {
-                        writeRect(str, x_offset+8, y_offset+8, x_offset+16, y_offset+16);
-                        str.Append("[[");
-                        str.Append(comboBox1.Text);
-                        str.Append(" (Ultima IV)|U4-");
-                        str.Append(comboBox1.Text);
-                        str.Append("-L");
-                        str.Append((level + 1).ToString());
-                        str.AppendLine("]]");
+                //g.DrawImage(tile, x_offset, y_offset, tile_size * tile_scale, tile_size * tile_scale);
+                g.DrawString((tileNum - 0xD0).ToString(), this.Font, Brushes.Black, x_offset, y_offset);
 
-                        writeRect(str, x_offset, y_offset, x_offset + 8, y_offset + 8);
-                        str.Append("[[");
-                        str.Append(comboBox1.Text);
-                        str.Append(" (Ultima IV)|U4-");
-                        str.Append(comboBox1.Text);
-                        str.Append("-L");
-                        str.Append((level - 1).ToString());
-                        str.AppendLine("]]");
-                    }
-                    break;
-                //case 0x40: Treasure Chest
-                case 0x70: //Magic Orb
-                    writeRect(str, x_offset, y_offset);
-                    str.AppendLine("[[Magic Orbs]]");
-                    break;
-                case 0x80: // Wind Trap
-                    writeRect(str, x_offset, y_offset);
-                    str.AppendLine("[[Wind Trap]]");
-                    break;
-                case 0x81: // Pit Trap
-                    writeRect(str, x_offset, y_offset);
-                    str.AppendLine("[[Pit Trap]]");
-                    break;
-                case 0x90: // Plain Fountain
-                    writeRect(str, x_offset, y_offset);
-                    str.AppendLine("[[Fountain|Plain Fountain]]");
-                    break;
-                case 0x91: // Healing Fountain
-                    writeRect(str, x_offset, y_offset);
-                    str.AppendLine("[[Fountain|Healing Fountain]]");
-                    break;
-                case 0x92: // Acid Fountain
-                    writeRect(str, x_offset, y_offset);
-                    str.AppendLine("[[Fountain|Acid Fountain]]");
-                    break;
-                case 0x93: // Cure Fountain
-                    writeRect(str, x_offset, y_offset);
-                    str.AppendLine("[[Fountain|Cure Fountain]]");
-                    break;
-                case 0x94: // Poison Fountain
-                    writeRect(str, x_offset, y_offset);
-                    str.AppendLine("[[Fountain|Poison Fountain]]");
-                    break;
-                case 0xA0: // Poison Field
-                    writeRect(str, x_offset, y_offset);
-                    str.AppendLine("[[Poison Field]]");
-                    break;
-                case 0xA1: // Energy Field
-                    writeRect(str, x_offset, y_offset);
-                    str.AppendLine("[[Lightning Field]]");
-                    break;
-                case 0xA2: // Fire Field
-                    writeRect(str, x_offset, y_offset);
-                    str.AppendLine("[[Fire Field]]");
-                    break;
-                case 0xA3: // Sleep Field
-                    writeRect(str, x_offset, y_offset);
-                    str.AppendLine("[[Sleep Field]]");
-                    break;
-                case 0xB0: // Altar/Stone
-                    if(currentFile != "ABYSS.DNG")
-                    {
-                        writeRect(str, x_offset, y_offset);
-                        str.AppendLine("[[Virtue Stones]]");
-                    }
-                    else if( level != 8)
-                    {
-                        writeRect(str, x_offset, y_offset);
-                        str.Append("[[");
-                        str.Append(comboBox1.Text);
-                        str.Append(" (Ultima IV)|U4-");
-                        str.Append(comboBox1.Text);
-                        str.Append("-L");
-                        str.Append((level + 1).ToString());
-                        str.AppendLine("]]");
-                    }
-                    break;
-                case 0xE0: // Secret Door
-                    writeRect(str, x_offset, y_offset);
-                    str.AppendLine("[[Secret Door]]");
-                    break;
-                case 0xD0:
-                case 0xD1:
-                case 0xD2:
-                case 0xD3:
-                case 0xD4:
-                case 0xD5:
-                case 0xD6:
-                case 0xD7:
-                case 0xD8:
-                case 0xD9:
-                case 0xDA:
-                case 0xDB:
-                case 0xDC:
-                case 0xDD:
-                case 0xDE:
-                case 0xDF:
-                    writeRect(str, x_offset, y_offset);
-                    str.Append("[[U4-");
-                    str.Append(comboBox1.Text);
-                    str.Append("-L");
-                    str.Append(level.ToString());
-                    str.Append("-");
-                    str.Append("Room-");
-                    str.Append((tileNum-0xD0).ToString());
-                    str.AppendLine("]]");
-
-                    //g.DrawImage(tile, x_offset, y_offset, tile_size * tile_scale, tile_size * tile_scale);
-                    g.DrawString((tileNum - 0xD0).ToString(), this.Font, Brushes.Black, x_offset, y_offset);
-                    break;
+                lstRooms.Items.Add("Room " + (tileNum - 0xD0));
             }
-        }
-
-        private void writeRect(StringBuilder str, int x, int y)
-        {
-            writeRect(str, x, y, x + 16, y + 16);
-        }
-        private void writeRect(StringBuilder str, int x, int y, int x2, int y2)
-        {
-            str.Append("rect ");
-            str.Append(x.ToString());
-            str.Append(" ");
-            str.Append(y.ToString());
-            str.Append(" ");
-            str.Append((x2).ToString());
-            str.Append(" ");
-            str.Append((y2).ToString());
-            str.Append(" ");
         }
 
         public List<List<byte>> LoadLevel(int level)
         {
-            level = level-1;
-            //byte[] levelArr = new byte[8 * 8];
+            level = level - 1;
 
-            System.IO.BinaryReader bReader = new System.IO.BinaryReader(new System.IO.FileStream("Maps\\"+ currentFile,System.IO.FileMode.Open));
+            BinaryReader bReader = new BinaryReader(new FileStream("Maps\\" + currentFile, FileMode.Open));
 
             bReader.ReadBytes(8 * 8 * level);
 
@@ -553,28 +378,9 @@ namespace U4Mapper
             return ret;
         }
 
-        int _level = 1;
-        private int level
-        {
-            get
-            {
-                return _level;
-            }
-
-            set
-            {
-                _level = value;
-                label1.Text = _level.ToString();
-            }
-        }
-        private void button1_Click(object sender, EventArgs e)
-        {
-            level = level % 8 +1;
-            DrawLevel(level);
-        }
-
         private void DrawLevel(int level)
         {
+            lstRooms.Items.Clear();
             DrawLevel(level, LoadLevel(level));
         }
         private void DrawLevel(int levelNum, List<List<byte>> level)
@@ -585,59 +391,33 @@ namespace U4Mapper
                 return;
             }
             Bitmap image = new Bitmap((int)(level.Count * tile_size * tile_scale), (int)(level[0].Count * tile_size * tile_scale));
-            StringBuilder str = new StringBuilder();
-            str.AppendLine("<imagemap>");
-            str.Append("Image:U4-");
-            str.Append(comboBox1.Text);
-            str.Append("-L");
-            str.Append(levelNum.ToString());
-            str.Append(".png|thumb|center|555px|alt=");
-            str.Append(comboBox1.Text);
-            str.Append(" Level ");
-            str.Append(levelNum.ToString());
-            str.Append("|");
-            str.Append(comboBox1.Text);
-            str.Append(" Level ");
-            str.Append(levelNum.ToString());
-            str.AppendLine(" - Click locations on the map for more details");
-            str.AppendLine("");
-
+            imgMapper = new Imagemapper();
+            imgMapper.Init(cmbDungeons.Text, levelNum);
+            
             for (int i = 0; i < level.Count; i++)
             {
                 for( int j = 0; j < level[i].Count; j++)
                 {
                     byte tile = level[i][j];
-                    DrawTile(image, i, j, tile, str);
+                    DrawTile(image, i, j, tile, imgMapper);
                 }
             }
             
             pictureBox1.Image = image;
 
-            str.AppendLine("");
-            str.AppendLine("desc bottom-left");
-            str.AppendLine("</imagemap>");
+            imgMapper.Footer();
 
-            textBox1.Text = str.ToString();
+            textBox1.Text = imgMapper.Export();
         }
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            currentFile = comboBox1.Text.ToUpper() + ".DNG";
+            currentFile = cmbDungeons.Text.ToUpper() + ".DNG";
             level = 1;
             DrawLevel(level);
+            lstLevels.SetSelected(0, true);
         }
-
-        private void button2_Click(object sender, EventArgs e)
-        {
-            level = level - 1 % 8;
-            if (level == 0)
-            {
-                level = 8;
-            }
-            DrawLevel(level);
-        }
-
-        private bool drawStyle = false;
+                
         private void button3_Click(object sender, EventArgs e)
         {
             drawStyle = !drawStyle;
@@ -646,12 +426,12 @@ namespace U4Mapper
 
         private void exportAllToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            for (int i = 0; i < comboBox1.Items.Count; i++)
+            for (int i = 0; i < cmbDungeons.Items.Count; i++)
             {
-                comboBox1.SelectedIndex = i;
+                cmbDungeons.SelectedIndex = i;
                 StringBuilder str = new StringBuilder();
                 str.Append("U4-");
-                str.Append(comboBox1.Text);
+                str.Append(cmbDungeons.Text);
                 str.Append("-L");
                 str.Append(level.ToString());
                 str.Append("-All.txt");
@@ -661,7 +441,7 @@ namespace U4Mapper
                 {
                     level = j;
                     DrawLevel(level);
-                    Export(sw);
+                    imgMapper.Export(null, pictureBox1.Image, ref textBox1);
                 }
                 sw.Close();
                 fs.Close();
@@ -671,55 +451,7 @@ namespace U4Mapper
 
         private void Export()
         {
-            Export(null);
-        }
-
-        private void Export(StreamWriter allFormat)
-        {
-            StringBuilder str = new StringBuilder();
-            str.Append("U4-");
-            str.Append(comboBox1.Text);
-            str.Append("-L");
-            str.Append(level.ToString());
-            //str.Append(".png");
-
-            Bitmap blah = (Bitmap)pictureBox1.Image;
-            BitmapSource image = _bitmapToSource(blah);
-            FileStream stream = new FileStream(str.ToString() +".png", FileMode.Create);
-            PngBitmapEncoder encoder = new PngBitmapEncoder();
-            //TextBlock myTextBlock = new TextBlock();
-            //myTextBlock.Text = "Codec Author is: " + encoder.CodecInfo.Author.ToString();
-            encoder.Interlace = PngInterlaceOption.On;
-            encoder.Frames.Add(BitmapFrame.Create(image));
-            encoder.Save(stream);
-            stream.Close();
-
-            FileStream fs = new FileStream(str.ToString() + ".txt", FileMode.Create, FileAccess.Write, FileShare.Write);
-            StreamWriter sw = new StreamWriter(fs);
-            sw.Write(textBox1.Text);
-            if (allFormat != null)
-            {
-                //{| style="display:inline"
-                //|
-                allFormat.WriteLine("{| style=\"display:inline\"");
-                allFormat.Write("| ");
-                allFormat.WriteLine(textBox1.Text);
-                allFormat.WriteLine("|}");
-            }
-            sw.Close();
-            fs.Close();
-
-
-        }
-
-        private BitmapSource _bitmapToSource(System.Drawing.Bitmap bitmap)
-        {
-            BitmapSource destination;
-            IntPtr hBitmap = bitmap.GetHbitmap();
-            BitmapSizeOptions sizeOptions = BitmapSizeOptions.FromEmptyOptions();
-            destination = System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(hBitmap, IntPtr.Zero, System.Windows.Int32Rect.Empty, sizeOptions);
-            destination.Freeze();
-            return destination;
+            imgMapper.Export();
         }
 
         private void exportToolStripMenuItem_Click(object sender, EventArgs e)
@@ -756,7 +488,7 @@ namespace U4Mapper
             }
 
             pictureBox1.Image = image;
-            BitmapSource bSource = _bitmapToSource(image);
+            BitmapSource bSource = Imagemapper.BitmapToSource(image);
             FileStream stream = new FileStream("layer0.png", FileMode.Create);
             PngBitmapEncoder encoder = new PngBitmapEncoder();
             //TextBlock myTextBlock = new TextBlock();
@@ -805,14 +537,12 @@ namespace U4Mapper
             {
                 world[i] = new byte[256];
             }
-
-
     	
     	    try {
     		    int chunkwidth = 32;
     		    int chunkSize = chunkwidth*chunkwidth;
     		    byte[] chunk; // = new byte[chunkSize];
-                System.IO.BinaryReader worldMap = new System.IO.BinaryReader(new System.IO.FileStream("Maps\\WORLD.MAP", System.IO.FileMode.Open));
+                BinaryReader worldMap = new BinaryReader(new FileStream("Maps\\WORLD.MAP", FileMode.Open));
     			
 			    for(int chunkCount = 0; chunkCount < 64; chunkCount++)
 			    {
@@ -884,7 +614,7 @@ namespace U4Mapper
             }
 
             pictureBox1.Image = image;
-            BitmapSource bSource = _bitmapToSource(image);
+            BitmapSource bSource = Imagemapper.BitmapToSource(image);
             FileStream stream = new FileStream( "layer0.png", FileMode.Create);
             PngBitmapEncoder encoder = new PngBitmapEncoder();
             //TextBlock myTextBlock = new TextBlock();
@@ -902,15 +632,29 @@ namespace U4Mapper
             LoadWorldMap();
         }
 
-        private void numTileScale_ValueChanged(object sender, EventArgs e)
+        private void LoadDungeonFiles()
         {
-            tile_scale = (float)numTileScale.Value;
+            foreach (string f in Directory.EnumerateFiles(maps_path, "*.dng"))
+            {
+                cmbDungeons.Items.Add(Path.GetFileNameWithoutExtension(f));
+
+                if (currentFile == "") { 
+                    currentFile = Path.GetFileName(f);
+                    cmbDungeons.SelectedIndex = 0;
+                }
+            }
+        }
+
+        private void lstLevels_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            level = lstLevels.SelectedIndex + 1;
             DrawLevel(level);
         }
 
-        private void Form1_Load(object sender, EventArgs e)
+        private void trackBar1_Scroll(object sender, EventArgs e)
         {
-
+            tile_scale = 1+(trackBar1.Value/4.0f);
+            DrawLevel(level);
         }
     }
 }
