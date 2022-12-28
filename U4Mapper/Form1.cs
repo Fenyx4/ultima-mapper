@@ -13,15 +13,17 @@ namespace U4Mapper
 {
     public partial class Form1 : Form
     {
-        private const int tile_size = 16;
+        private const float tile_size = 16.0f;
+        private float tile_scale = 1.0f;
         private Dictionary<int,Bitmap> tiles;
         private String currentFile;
+
         public Form1()
         {
             InitializeComponent();
 
             LoadTiles();
-            Bitmap image = new Bitmap(8 * tile_size, 8 * tile_size);
+            Bitmap image = new Bitmap((int)(8.0f * tile_size * tile_scale), (int)(8.0f * tile_size * tile_scale));
             pictureBox1.Image = image;
             LoadDungeons();
             DrawLevel(1);
@@ -116,8 +118,8 @@ namespace U4Mapper
 
         private void DrawTile(Bitmap image, int x, int y, int tileNum, StringBuilder str)
         {
-            int x_offset = x * tile_size;
-            int y_offset = y * tile_size;
+            int x_offset = (int)(x * tile_size * tile_scale);
+            int y_offset = (int)(y * tile_size * tile_scale);
 
             Bitmap tile = tiles[0xFF];
             if (tiles.ContainsKey(tileNum))
@@ -125,14 +127,8 @@ namespace U4Mapper
                 tile = tiles[tileNum];
             }
 
-            for (int i = 0; i < tile_size; i++)
-            {
-                for (int j = 0; j < tile_size; j++)
-                {
-                    Color pixel = tile.GetPixel(i, j);
-                    image.SetPixel(x_offset + i, y_offset + j, pixel);
-                }
-            }
+            Graphics g = Graphics.FromImage(image);
+            g.DrawImage(tile, x_offset, y_offset, tile_size * tile_scale, tile_size * tile_scale);
 
             switch (tileNum)
             {
@@ -295,6 +291,9 @@ namespace U4Mapper
                     str.Append("Room-");
                     str.Append((tileNum-0xD0).ToString());
                     str.AppendLine("]]");
+
+                    //g.DrawImage(tile, x_offset, y_offset, tile_size * tile_scale, tile_size * tile_scale);
+                    g.DrawString((tileNum - 0xD0).ToString(), this.Font, Brushes.Black, x_offset, y_offset);
                     break;
             }
         }
@@ -585,7 +584,7 @@ namespace U4Mapper
                 //Nothing to draw
                 return;
             }
-            Bitmap image = new Bitmap(level.Count*tile_size,level[0].Count*tile_size);
+            Bitmap image = new Bitmap((int)(level.Count * tile_size * tile_scale), (int)(level[0].Count * tile_size * tile_scale));
             StringBuilder str = new StringBuilder();
             str.AppendLine("<imagemap>");
             str.Append("Image:U4-");
@@ -903,5 +902,15 @@ namespace U4Mapper
             LoadWorldMap();
         }
 
+        private void numTileScale_ValueChanged(object sender, EventArgs e)
+        {
+            tile_scale = (float)numTileScale.Value;
+            DrawLevel(level);
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }
