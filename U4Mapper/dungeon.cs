@@ -4,19 +4,18 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
 
 namespace U4Mapper
 {
     internal class dungeon
     {
-        private bool _is_normal_layout = false;
         public string name = "";
         public List<level> levels = new List<level>();
         public List<room> rooms = new List<room>();
 
         public dungeon(string file_path, bool is_normal_layout)
         {
-            _is_normal_layout = is_normal_layout;
             name = Path.GetFileNameWithoutExtension(file_path);
 
             BinaryReader bReader = new BinaryReader(new FileStream(file_path, FileMode.Open));
@@ -29,11 +28,23 @@ namespace U4Mapper
 
             //rooms
             try {
-                //for (int i = 0; i < 16; i++) {
-                    //rooms.Add(new room());
-                //}
+                for (int i = 0; i < 16; i++) {
+                    rooms.Add(new room(i, bReader.ReadBytes(256)));
+                }
+                if (name.ToUpper() == "ABYSS")
+                {
+                    for (int i = 16; i < 64; i++)
+                    {
+                        rooms.Add(new room(i, bReader.ReadBytes(256)));
+                    }
+                }
             }
-            catch { }
+            catch (Exception ex){
+                
+            }
+
+            //room tiles
+
 
             bReader.Close();
 

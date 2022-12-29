@@ -79,7 +79,7 @@
             this.tabControl1.Location = new System.Drawing.Point(0, 24);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(919, 423);
+            this.tabControl1.Size = new System.Drawing.Size(1080, 519);
             this.tabControl1.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
             this.tabControl1.TabIndex = 2;
             // 
@@ -99,7 +99,7 @@
             this.tabPage1.Location = new System.Drawing.Point(4, 28);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(911, 391);
+            this.tabPage1.Size = new System.Drawing.Size(1072, 487);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Dungeons";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -196,7 +196,7 @@
             this.stuffToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(919, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(1080, 24);
             this.menuStrip1.TabIndex = 8;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -278,7 +278,7 @@
             this.panel2.Controls.Add(this.picRoom);
             this.panel2.Location = new System.Drawing.Point(664, 32);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(232, 240);
+            this.panel2.Size = new System.Drawing.Size(384, 344);
             this.panel2.TabIndex = 18;
             // 
             // picRoom
@@ -286,7 +286,7 @@
             this.picRoom.BackColor = System.Drawing.Color.White;
             this.picRoom.Location = new System.Drawing.Point(4, 4);
             this.picRoom.Name = "picRoom";
-            this.picRoom.Size = new System.Drawing.Size(220, 228);
+            this.picRoom.Size = new System.Drawing.Size(372, 332);
             this.picRoom.TabIndex = 0;
             this.picRoom.TabStop = false;
             // 
@@ -294,7 +294,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(919, 447);
+            this.ClientSize = new System.Drawing.Size(1080, 543);
             this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;

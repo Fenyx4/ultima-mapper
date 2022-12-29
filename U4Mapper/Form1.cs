@@ -6,7 +6,10 @@ using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Windows.Forms;
+using System.Windows.Interop;
+//using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Media.Media3D;
 
 namespace U4Mapper
 {
@@ -20,6 +23,7 @@ namespace U4Mapper
         private bool drawStyle = false;
         private int level = 1;
         private Imagemapper imgMapper = new Imagemapper();
+        private Image img_room_tiles;
         dungeon dungeon;
 
         public Form1()
@@ -27,6 +31,7 @@ namespace U4Mapper
             InitializeComponent();
 
             LoadTiles();
+            img_room_tiles = new Bitmap("Tiles\\tiles.png");
             Bitmap image = new Bitmap((int)(8.0f * tile_size * tile_scale), (int)(8.0f * tile_size * tile_scale));
             pictureBox1.Image = image;
             LoadDungeonFiles();
@@ -217,13 +222,15 @@ namespace U4Mapper
         private void DrawCharset()
         {
             int size = (8/2)*(8/2)*(122+32);
-            System.IO.BinaryReader worldMap = new System.IO.BinaryReader(new System.IO.FileStream("Maps\\CHARSET.EGA", System.IO.FileMode.Open));
+            //BinaryReader worldMap = new BinaryReader(new FileStream("Maps\\CHARSET.EGA", FileMode.Open));
+            BinaryReader worldMap = new BinaryReader(new FileStream("Maps\\SHAPES.EGA", FileMode.Open));
 
             byte[] charset = worldMap.ReadBytes(size);
 
             worldMap.Close();
 
             Bitmap image = new Bitmap(8, 8*(122+32));
+            //Bitmap image = new Bitmap(8 * 16, 8 * 16);
 
             int nibble;
             Color pixel;
@@ -232,22 +239,23 @@ namespace U4Mapper
                 nibble = charset[i];
                 nibble = nibble >> 4;
                 pixel = CharsetColor(nibble);
-                 
+
                 //pixel = Color.FromArgb((nibble & 0x20) << 2, (nibble & 0x40) << 1, (nibble & 0x80));
                 //pixel = Color.FromArgb(nibble);
                 image.SetPixel((i*2) % 8, (i*2) / 8,pixel);
+
                 nibble = charset[i] & 0x0F;
                 //pixel = Color.FromArgb((nibble & 0x2) << 6, (nibble & 0x4) << 5, (nibble & 0x8) << 4);
                 pixel = CharsetColor(nibble);
-                image.SetPixel((i * 2+1) % 8, (i * 2+1) / 8, pixel);
+                //image.SetPixel((i * 2+1) % 8, (i * 2+1) / 8, pixel);
+                image.SetPixel((i * 2 + 1) % 8, (i * 2 + 1) / 8, pixel);
             }
 
             pictureBox1.Image = image;
             BitmapSource bSource = Imagemapper.BitmapToSource(image);
             FileStream stream = new FileStream("layer0.png", FileMode.Create);
             PngBitmapEncoder encoder = new PngBitmapEncoder();
-            //TextBlock myTextBlock = new TextBlock();
-            //myTextBlock.Text = "Codec Author is: " + encoder.CodecInfo.Author.ToString();
+
             encoder.Interlace = PngInterlaceOption.On;
             encoder.Frames.Add(BitmapFrame.Create(bSource));
             encoder.Save(stream);
@@ -414,15 +422,44 @@ namespace U4Mapper
 
         private void lstRooms_SelectedIndexChanged(object sender, EventArgs e)
         {
-            Bitmap image = new Bitmap(88, 88);
+            Bitmap image = new Bitmap(11 * 16 * 2, 11 * 16 * 2);
             Graphics g = Graphics.FromImage(image);
             g.Clear(Color.White);
             picRoom.Image = image;
+            byte b;
 
             if (lstRooms.Items.Count > 0)
             {
+                int room_id = int.Parse(lstRooms.SelectedItem.ToString().Replace("Room ", ""));
 
+                for(int y = 0; y < 11; y ++)
+                {
+                    for (int x = 0; x < 11; x ++) {
+                        b = dungeon.rooms[room_id].room_tiles[x, y];
+                        DrawRoomTile(image, x, y, b);
+                    }
+                }
+                picRoom.Image = image;
             }
+        }
+        private void DrawRoomTile(Bitmap image, int x, int y, int tileNum)
+        {
+            int x_offset = (int)(x * tile_size * tile_scale);
+            int y_offset = (int)(y * tile_size * tile_scale);
+
+            int cx = tileNum % 16;
+            int cy = tileNum / 16;
+            
+            Rectangle cloneRect = new Rectangle(cx * 16, cy * 16, 15, 15);
+            Image tile = new Bitmap(32, 32);
+            Graphics t = Graphics.FromImage(tile);
+            t.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.High;
+            t.DrawImage(img_room_tiles, 0, 0, cloneRect, GraphicsUnit.Pixel);
+                       
+            Graphics g = Graphics.FromImage(image);
+            g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.High;
+            g.DrawImage(tile, x_offset, y_offset, 26 * tile_scale, 26 * tile_scale);
+
         }
     }
 }
