@@ -141,7 +141,6 @@ namespace U4Mapper
             imgMapper.Init(dungeon.name, level_num);
 
             List<int> roomlist = new List<int>();
-
             for (int i = 0; i < level_data.Count; i++)
             {
                 for( int j = 0; j < level_data[i].Count; j++)
@@ -150,13 +149,17 @@ namespace U4Mapper
                     DrawTile(image, i, j, tile, imgMapper);
                     if (tile >= 0xD0 && tile <= 0xDF)
                     {
-                        roomlist.Add(tile - 0xD0);
+                        if (!roomlist.Contains(tile - 0xD0))
+                        {
+                            roomlist.Add(tile - 0xD0);
+                        }
                     }
                 }
             }
             roomlist.Sort();
             lstRooms.Items.Clear();
             roomlist.ForEach(e => lstRooms.Items.Add("Room " + e));
+            
             if (lstRooms.Items.Count > 0)
             {
                 lstRooms.SelectedIndex = 0;
@@ -436,14 +439,20 @@ namespace U4Mapper
             if (lstRooms.Items.Count > 0)
             {
                 int room_id = int.Parse(lstRooms.SelectedItem.ToString().Replace("Room ", ""));
-                room r = dungeon.rooms[room_id];
+                room r;
+                if (dungeon.rooms.Count > 16)
+                {
+                    room_id = room_id + (16 * ((level - 1) / 2));
+                }
+
+                r = dungeon.rooms[room_id];
 
                 for (int y = 0; y < 11; y++)
                 {
                     for (int x = 0; x < 11; x++)
                     {
                         b = r.room_tiles[x, y];
-                        DrawRoomTile(image, x, y, b);
+                        DrawRoomTile(image, x, y, (TileEnum)b);
                     }
                 }
 
@@ -451,7 +460,7 @@ namespace U4Mapper
                 {
                     foreach (room_monster rm in r.monsters)
                     {
-                        DrawRoomTile(image, rm.start_pos.X, rm.start_pos.Y, (int)rm.monster_type_id);
+                        DrawRoomTile(image, rm.start_pos.X, rm.start_pos.Y, rm.monster_type_id);
                     }
                 }
                 if (r.hasTrigger1() && cbTrigger1.Checked)
@@ -501,7 +510,7 @@ namespace U4Mapper
             r.GetStartPositionsByDirection(dir).ForEach(p => {
                 if (p.start_pos != Point.Empty)
                 {
-                    DrawRoomTile(image, p.start_pos.X, p.start_pos.Y, 32 + (p.party_member_id * 2));
+                    DrawRoomTile(image, p.start_pos.X, p.start_pos.Y, (TileEnum)(32 + (p.party_member_id * 2)));
                 }
             });
         }
@@ -519,13 +528,13 @@ namespace U4Mapper
             }
             DrawRoomHighlight(image, r.triggers[trigger_index].trigger_pos.X, r.triggers[trigger_index].trigger_pos.Y, color1);
         }
-        private void DrawRoomTile(Bitmap image, int x, int y, int tileNum)
+        private void DrawRoomTile(Bitmap image, int x, int y, TileEnum tileNum)
         {
             int x_offset = (int)(x * tile_size * tile_scale);
             int y_offset = (int)(y * tile_size * tile_scale);
 
-            int cx = tileNum % 16;
-            int cy = tileNum / 16;
+            int cx = (int)tileNum % 16;
+            int cy = (int)tileNum / 16;
             
             Rectangle cloneRect = new Rectangle(cx * 16, cy * 16, 16, 16);
             Bitmap tile = new Bitmap(16, 16);
@@ -546,6 +555,10 @@ namespace U4Mapper
         private void UpdateRoomDrawOptions()
         {
             int room_id = int.Parse(lstRooms.SelectedItem.ToString().Replace("Room ", ""));
+            if (dungeon.rooms.Count > 16)
+            {
+                room_id = room_id + (16 * ((level - 1) / 2));
+            }
             room r = dungeon.rooms[room_id];
 
             cbMonsters.Enabled = (r.monsters.Count > 0);

@@ -20,7 +20,7 @@ namespace U4Mapper
             direction = dir;
             start_pos = new Point(position_data[0 + offset], position_data[8 + offset]);
 
-            Debug.WriteLine(dir.ToString() + " " + start_pos.ToString());
+            //Debug.WriteLine(dir.ToString() + " " + start_pos.ToString());
         }
     }
 }

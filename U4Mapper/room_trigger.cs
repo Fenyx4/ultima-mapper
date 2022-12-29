@@ -1,22 +1,27 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace U4Mapper
 {
     internal class room_trigger
     {
-        public int tile_num;
+        public TileEnum tile_num;
         public Point trigger_pos;
         public Point tile_1_pos;
         public Point tile_2_pos;
 
         public room_trigger(byte[] trigger_data, int offset)
         {
-            tile_num = trigger_data[0 + offset];
+            tile_num = (TileEnum)trigger_data[0 + offset];
+            if (tile_num > 0)
+            {
+                Debug.WriteLine(tile_num);
+                if (tile_num == TileEnum.Daemon_1)
+                {
+
+                }
+            }
             trigger_pos = PointFromHex(trigger_data[1 + offset]);
             tile_1_pos = PointFromHex(trigger_data[2 + offset]);
             tile_2_pos = PointFromHex(trigger_data[3 + offset]);

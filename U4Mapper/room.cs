@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.Remoting.Messaging;
 using System.Text;
@@ -33,6 +34,7 @@ namespace U4Mapper
 
             //read triggers
             bSize = 4;
+            Debug.WriteLine("Room id: " + index);
             for (int i = 0; i < 4; i++)
             {
                 _t = new room_trigger(room_data, bPos + (bSize * i));
