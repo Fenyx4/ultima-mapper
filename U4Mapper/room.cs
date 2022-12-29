@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Remoting.Messaging;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -87,6 +88,20 @@ namespace U4Mapper
                 }
             }
 
+        }
+
+        public bool hasMonsters()
+        {
+            return monsters.Count > 0;
+        }
+        public bool hasTrigger1() { return triggers.Count > 0; }
+        public bool hasTrigger2() { return triggers.Count > 1; }
+        public bool hasTrigger3() { return triggers.Count > 2; }
+        public bool hasTrigger4() { return triggers.Count > 3; }
+
+        public List<room_start_position> GetStartPositionsByDirection(DirectionEnum dir)
+        {
+            return start_positions.FindAll(e => e.direction == dir);
         }
     }
 }

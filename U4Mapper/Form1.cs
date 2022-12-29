@@ -10,6 +10,7 @@ using System.Windows.Interop;
 //using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Media.Media3D;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace U4Mapper
 {
@@ -23,7 +24,7 @@ namespace U4Mapper
         private bool drawStyle = false;
         private int level = 1;
         private Imagemapper imgMapper = new Imagemapper();
-        private Image img_room_tiles;
+        private Bitmap img_room_tiles;
         dungeon dungeon;
 
         public Form1()
@@ -446,12 +447,46 @@ namespace U4Mapper
                     }
                 }
 
-                if (cbMonsters.Checked)
+                if (r.hasMonsters() && cbMonsters.Checked)
                 {
                     foreach (room_monster rm in r.monsters)
                     {
                         DrawRoomTile(image, rm.start_pos.X, rm.start_pos.Y, (int)rm.monster_type_id);
                     }
+                }
+                if (r.hasTrigger1() && cbTrigger1.Checked)
+                {
+                    DrawTrigger(image, r, 0, Color.Yellow, Color.Orange);
+                }
+                if (r.hasTrigger2() && cbTrigger2.Checked)
+                {
+                    DrawTrigger(image, r, 1, Color.Lime, Color.Green);
+                }
+                if (r.hasTrigger3() && cbTrigger3.Checked)
+                {
+                    DrawTrigger(image, r, 2, Color.LightBlue, Color.SteelBlue);
+                }
+                if (r.hasTrigger4() && cbTrigger4.Checked)
+                {
+                    DrawTrigger(image, r, 3, Color.Cyan, Color.DarkCyan);
+                }
+
+                //part start positions
+                if (cbParty.Checked && rbNorth.Checked)
+                {
+                    DrawPartyStartPositions(image, r, DirectionEnum.north);
+                }
+                if (cbParty.Checked && rbEast.Checked)
+                {
+                    DrawPartyStartPositions(image, r, DirectionEnum.east);
+                }
+                if (cbParty.Checked && rbSouth.Checked)
+                {
+                    DrawPartyStartPositions(image, r, DirectionEnum.south);
+                }
+                if (cbParty.Checked && rbWest.Checked)
+                {
+                    DrawPartyStartPositions(image, r, DirectionEnum.west);
                 }
             }
             else
@@ -460,6 +495,29 @@ namespace U4Mapper
             }
 
             picRoom.Image = image;
+        }
+        private void DrawPartyStartPositions(Bitmap image, room r, DirectionEnum dir)
+        {
+            r.GetStartPositionsByDirection(dir).ForEach(p => {
+                if (p.start_pos != Point.Empty)
+                {
+                    DrawRoomTile(image, p.start_pos.X, p.start_pos.Y, 32 + (p.party_member_id * 2));
+                }
+            });
+        }
+        private void DrawTrigger(Bitmap image, room r, int trigger_index, Color color1, Color color2)
+        {
+            if (r.triggers[trigger_index].tile_1_pos != Point.Empty)
+            {
+                DrawRoomTile(image, r.triggers[trigger_index].tile_1_pos.X, r.triggers[trigger_index].tile_1_pos.Y, r.triggers[trigger_index].tile_num);
+                DrawRoomHighlight(image, r.triggers[trigger_index].tile_1_pos.X, r.triggers[trigger_index].tile_1_pos.Y, color2);
+            }
+            if (r.triggers[trigger_index].tile_2_pos != Point.Empty)
+            {
+                DrawRoomTile(image, r.triggers[trigger_index].tile_2_pos.X, r.triggers[trigger_index].tile_2_pos.Y, r.triggers[trigger_index].tile_num);
+                DrawRoomHighlight(image, r.triggers[trigger_index].tile_2_pos.X, r.triggers[trigger_index].tile_2_pos.Y, color2);
+            }
+            DrawRoomHighlight(image, r.triggers[trigger_index].trigger_pos.X, r.triggers[trigger_index].trigger_pos.Y, color1);
         }
         private void DrawRoomTile(Bitmap image, int x, int y, int tileNum)
         {
@@ -470,13 +528,19 @@ namespace U4Mapper
             int cy = tileNum / 16;
             
             Rectangle cloneRect = new Rectangle(cx * 16, cy * 16, 16, 16);
-            Image tile = new Bitmap(16, 16);
+            Bitmap tile = new Bitmap(16, 16);
             Bitmap bmap = (Bitmap)img_room_tiles;
             tile = bmap.Clone(cloneRect, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 
             Graphics g = Graphics.FromImage(image);
             g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.High;
             g.DrawImage(tile, x_offset, y_offset, 16 * tile_scale, 16 * tile_scale);
+        }
+        private void DrawRoomHighlight(Bitmap image, int x, int y, Color penColor)
+        {
+            Graphics g = Graphics.FromImage(image);
+            //g.DrawImage(tile, x_offset, y_offset, 16 * tile_scale, 16 * tile_scale);
+            g.DrawRectangle(new Pen(penColor), (x * 16 * tile_scale) - 1, (y * 16 * tile_scale) - 1, (16 * tile_scale) + 1, (16 * tile_scale) + 1);
         }
 
         private void UpdateRoomDrawOptions()
