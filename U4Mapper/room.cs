@@ -20,6 +20,7 @@ namespace U4Mapper
             int bSize = 0;
             int bPos = 0;
             room_monster m;
+            room_trigger _t;
 
             index = room_index;
             room_num = room_index % 16;
@@ -31,10 +32,11 @@ namespace U4Mapper
 
             //read triggers
             bSize = 4;
-            triggers.Add(new room_trigger(room_data, bPos + (bSize * 0)));
-            triggers.Add(new room_trigger(room_data, bPos + (bSize * 1)));
-            triggers.Add(new room_trigger(room_data, bPos + (bSize * 2)));
-            triggers.Add(new room_trigger(room_data, bPos + (bSize * 3)));
+            for (int i = 0; i < 4; i++)
+            {
+                _t = new room_trigger(room_data, bPos + (bSize * i));
+                if (_t.tile_num > 0) { triggers.Add(_t); }
+            }
             bPos = bSize * 4;
 
             //read monsters

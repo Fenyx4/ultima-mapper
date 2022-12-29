@@ -162,6 +162,7 @@ namespace U4Mapper
             }
 
             pictureBox1.Image = image;
+            UpdateRoomImage();
 
             imgMapper.Footer();
 
@@ -422,25 +423,43 @@ namespace U4Mapper
 
         private void lstRooms_SelectedIndexChanged(object sender, EventArgs e)
         {
+            UpdateRoomDrawOptions();
+            UpdateRoomImage();
+        }
+        private void UpdateRoomImage()
+        {
             Bitmap image = new Bitmap(11 * 16 * 2, 11 * 16 * 2);
             Graphics g = Graphics.FromImage(image);
-            g.Clear(Color.White);
-            picRoom.Image = image;
             byte b;
 
             if (lstRooms.Items.Count > 0)
             {
                 int room_id = int.Parse(lstRooms.SelectedItem.ToString().Replace("Room ", ""));
+                room r = dungeon.rooms[room_id];
 
-                for(int y = 0; y < 11; y ++)
+                for (int y = 0; y < 11; y++)
                 {
-                    for (int x = 0; x < 11; x ++) {
-                        b = dungeon.rooms[room_id].room_tiles[x, y];
+                    for (int x = 0; x < 11; x++)
+                    {
+                        b = r.room_tiles[x, y];
                         DrawRoomTile(image, x, y, b);
                     }
                 }
-                picRoom.Image = image;
+
+                if (cbMonsters.Checked)
+                {
+                    foreach (room_monster rm in r.monsters)
+                    {
+                        DrawRoomTile(image, rm.start_pos.X, rm.start_pos.Y, (int)rm.monster_type_id);
+                    }
+                }
             }
+            else
+            {
+                g.Clear(Color.White);
+            }
+
+            picRoom.Image = image;
         }
         private void DrawRoomTile(Bitmap image, int x, int y, int tileNum)
         {
@@ -450,16 +469,76 @@ namespace U4Mapper
             int cx = tileNum % 16;
             int cy = tileNum / 16;
             
-            Rectangle cloneRect = new Rectangle(cx * 16, cy * 16, 15, 15);
-            Image tile = new Bitmap(32, 32);
-            Graphics t = Graphics.FromImage(tile);
-            t.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.High;
-            t.DrawImage(img_room_tiles, 0, 0, cloneRect, GraphicsUnit.Pixel);
-                       
+            Rectangle cloneRect = new Rectangle(cx * 16, cy * 16, 16, 16);
+            Image tile = new Bitmap(16, 16);
+            Bitmap bmap = (Bitmap)img_room_tiles;
+            tile = bmap.Clone(cloneRect, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+
             Graphics g = Graphics.FromImage(image);
             g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.High;
-            g.DrawImage(tile, x_offset, y_offset, 26 * tile_scale, 26 * tile_scale);
+            g.DrawImage(tile, x_offset, y_offset, 16 * tile_scale, 16 * tile_scale);
+        }
 
+        private void UpdateRoomDrawOptions()
+        {
+            int room_id = int.Parse(lstRooms.SelectedItem.ToString().Replace("Room ", ""));
+            room r = dungeon.rooms[room_id];
+
+            cbMonsters.Enabled = (r.monsters.Count > 0);
+            cbTrigger1.Enabled = (r.triggers.Count > 0);
+            cbTrigger2.Enabled = (r.triggers.Count > 1);
+            cbTrigger3.Enabled = (r.triggers.Count > 2);
+            cbTrigger4.Enabled = (r.triggers.Count > 3);
+        }
+
+        private void cbMonsters_CheckedChanged(object sender, EventArgs e)
+        {
+            UpdateRoomImage();
+        }
+
+        private void cbParty_CheckedChanged(object sender, EventArgs e)
+        {
+            UpdateRoomImage();
+        }
+
+        private void rbNorth_CheckedChanged(object sender, EventArgs e)
+        {
+            UpdateRoomImage();
+        }
+
+        private void rbEast_CheckedChanged(object sender, EventArgs e)
+        {
+            UpdateRoomImage();
+        }
+
+        private void rbSouth_CheckedChanged(object sender, EventArgs e)
+        {
+            UpdateRoomImage();
+        }
+
+        private void rbWest_CheckedChanged(object sender, EventArgs e)
+        {
+            UpdateRoomImage();
+        }
+
+        private void cbTrigger1_CheckedChanged(object sender, EventArgs e)
+        {
+            UpdateRoomImage();
+        }
+
+        private void cbTrigger2_CheckedChanged(object sender, EventArgs e)
+        {
+            UpdateRoomImage();
+        }
+
+        private void cbTrigger3_CheckedChanged(object sender, EventArgs e)
+        {
+            UpdateRoomImage();
+        }
+
+        private void cbTrigger4_CheckedChanged(object sender, EventArgs e)
+        {
+            UpdateRoomImage();
         }
     }
 }
