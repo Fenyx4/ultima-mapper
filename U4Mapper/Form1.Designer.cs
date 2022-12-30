@@ -125,6 +125,7 @@
             // 
             // cbParty
             // 
+            this.cbParty.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.cbParty.AutoSize = true;
             this.cbParty.Location = new System.Drawing.Point(576, 216);
             this.cbParty.Name = "cbParty";
@@ -136,6 +137,7 @@
             // 
             // pnlPartyPositions
             // 
+            this.pnlPartyPositions.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.pnlPartyPositions.Controls.Add(this.rbWest);
             this.pnlPartyPositions.Controls.Add(this.rbSouth);
             this.pnlPartyPositions.Controls.Add(this.rbEast);
@@ -196,6 +198,7 @@
             // 
             // cbTrigger4
             // 
+            this.cbTrigger4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.cbTrigger4.AutoSize = true;
             this.cbTrigger4.Location = new System.Drawing.Point(576, 344);
             this.cbTrigger4.Name = "cbTrigger4";
@@ -207,6 +210,7 @@
             // 
             // cbTrigger3
             // 
+            this.cbTrigger3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.cbTrigger3.AutoSize = true;
             this.cbTrigger3.Location = new System.Drawing.Point(576, 328);
             this.cbTrigger3.Name = "cbTrigger3";
@@ -218,6 +222,7 @@
             // 
             // cbTrigger2
             // 
+            this.cbTrigger2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.cbTrigger2.AutoSize = true;
             this.cbTrigger2.Location = new System.Drawing.Point(576, 312);
             this.cbTrigger2.Name = "cbTrigger2";
@@ -229,6 +234,7 @@
             // 
             // cbTrigger1
             // 
+            this.cbTrigger1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.cbTrigger1.AutoSize = true;
             this.cbTrigger1.Location = new System.Drawing.Point(576, 296);
             this.cbTrigger1.Name = "cbTrigger1";
@@ -240,6 +246,7 @@
             // 
             // cbMonsters
             // 
+            this.cbMonsters.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.cbMonsters.AutoSize = true;
             this.cbMonsters.Location = new System.Drawing.Point(576, 200);
             this.cbMonsters.Name = "cbMonsters";
@@ -251,6 +258,8 @@
             // 
             // panel2
             // 
+            this.panel2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.panel2.AutoScroll = true;
             this.panel2.BackColor = System.Drawing.Color.White;
             this.panel2.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
@@ -271,6 +280,7 @@
             // 
             // label1
             // 
+            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label1.Location = new System.Drawing.Point(528, 32);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(48, 18);
@@ -280,6 +290,7 @@
             // 
             // lstRooms
             // 
+            this.lstRooms.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lstRooms.FormattingEnabled = true;
             this.lstRooms.Location = new System.Drawing.Point(576, 32);
             this.lstRooms.Name = "lstRooms";
@@ -299,6 +310,9 @@
             // 
             // panel1
             // 
+            this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.panel1.AutoScroll = true;
             this.panel1.BackColor = System.Drawing.Color.White;
             this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
