@@ -8,13 +8,13 @@ using System.Threading.Tasks;
 
 namespace U4Mapper
 {
-    internal class room_start_position
+    internal class RoomStartPosition
     {
         public int party_member_id;
         public DirectionEnum direction;
         public Point start_pos;
 
-        public room_start_position(int id, DirectionEnum dir, byte[] position_data, int offset)
+        public RoomStartPosition(int id, DirectionEnum dir, byte[] position_data, int offset)
         {
             party_member_id = id;
             direction = dir;

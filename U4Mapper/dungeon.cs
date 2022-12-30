@@ -8,13 +8,13 @@ using System.Xml;
 
 namespace U4Mapper
 {
-    internal class dungeon
+    internal class Dungeon
     {
         public string name = "";
-        public List<level> levels = new List<level>();
-        public List<room> rooms = new List<room>();
+        public List<Level> levels = new List<Level>();
+        public List<Room> rooms = new List<Room>();
 
-        public dungeon(string file_path, bool is_normal_layout)
+        public Dungeon(string file_path, bool is_normal_layout)
         {
             name = Path.GetFileNameWithoutExtension(file_path);
 
@@ -23,19 +23,19 @@ namespace U4Mapper
             //levels
             for (int i = 0; i < 8; i++)
             {
-                levels.Add(new level(i, bReader.ReadBytes(8 * 8), is_normal_layout));
+                levels.Add(new Level(i, bReader.ReadBytes(8 * 8), is_normal_layout));
             }
 
             //rooms
             try {
                 for (int i = 0; i < 16; i++) {
-                    rooms.Add(new room(i, bReader.ReadBytes(256)));
+                    rooms.Add(new Room(i, bReader.ReadBytes(256)));
                 }
                 if (name.ToUpper() == "ABYSS")
                 {
                     for (int i = 16; i < 64; i++)
                     {
-                        rooms.Add(new room(i, bReader.ReadBytes(256)));
+                        rooms.Add(new Room(i, bReader.ReadBytes(256)));
                     }
                 }
             }
@@ -55,7 +55,7 @@ namespace U4Mapper
             levels[index].DrawLevel(is_normal_layout);
             return levels[index].resultingMap;
         }
-        public level GetLevel(int index, bool is_normal_layout)
+        public Level GetLevel(int index, bool is_normal_layout)
         {
             levels[index].DrawLevel(is_normal_layout);
             return levels[index];

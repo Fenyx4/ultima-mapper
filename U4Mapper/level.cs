@@ -8,7 +8,7 @@ using System.Windows.Forms;
 
 namespace U4Mapper
 {
-    internal class level
+    internal class Level
     {
         private bool[] levelDrawn = new bool[8 * 8];
         private byte[] _level_data;
@@ -16,7 +16,7 @@ namespace U4Mapper
 
         public List<List<byte>> resultingMap = new List<List<byte>>();
 
-        public level(int level_num, byte[] level_data, bool is_normal_layout)
+        public Level(int level_num, byte[] level_data, bool is_normal_layout)
         {
             _level_data = level_data;
             _level_num = level_num;

@@ -4,14 +4,14 @@ using System.Drawing;
 
 namespace U4Mapper
 {
-    internal class room_trigger
+    internal class RoomTrigger
     {
         public TileEnum tile_num;
         public Point trigger_pos;
         public Point tile_1_pos;
         public Point tile_2_pos;
 
-        public room_trigger(byte[] trigger_data, int offset)
+        public RoomTrigger(byte[] trigger_data, int offset)
         {
             tile_num = (TileEnum)trigger_data[0 + offset];
             if (tile_num > 0)

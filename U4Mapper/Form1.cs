@@ -25,7 +25,7 @@ namespace U4Mapper
         private int level = 1;
         private Imagemapper imgMapper = new Imagemapper();
         private Bitmap img_room_tiles;
-        dungeon dungeon;
+        Dungeon dungeon;
 
         public Form1()
         {
@@ -133,7 +133,7 @@ namespace U4Mapper
         }
 
         private void DrawLevel(int level_num) {
-            level l = dungeon.GetLevel(level_num - 1, drawStyle);
+            Level l = dungeon.GetLevel(level_num - 1, drawStyle);
             List<List<byte>> level_data = l.resultingMap;
 
             Bitmap image = new Bitmap((int)(level_data.Count * tile_size * tile_scale), (int)(level_data[0].Count * tile_size * tile_scale));
@@ -176,7 +176,7 @@ namespace U4Mapper
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
             currentFile = cmbDungeons.Text.ToUpper() + ".DNG";
-            dungeon = new dungeon("Maps\\" + currentFile, drawStyle);
+            dungeon = new Dungeon("Maps\\" + currentFile, drawStyle);
 
             level = 1;
             DrawLevel(level);
@@ -439,7 +439,7 @@ namespace U4Mapper
             if (lstRooms.Items.Count > 0)
             {
                 int room_id = int.Parse(lstRooms.SelectedItem.ToString().Replace("Room ", ""));
-                room r;
+                Room r;
                 if (dungeon.rooms.Count > 16)
                 {
                     room_id = room_id + (16 * ((level - 1) / 2));
@@ -458,7 +458,7 @@ namespace U4Mapper
 
                 if (r.hasMonsters() && cbMonsters.Checked)
                 {
-                    foreach (room_monster rm in r.monsters)
+                    foreach (RoomMonster rm in r.monsters)
                     {
                         DrawRoomTile(image, rm.start_pos.X, rm.start_pos.Y, rm.monster_type_id);
                     }
@@ -505,7 +505,7 @@ namespace U4Mapper
 
             picRoom.Image = image;
         }
-        private void DrawPartyStartPositions(Bitmap image, room r, DirectionEnum dir)
+        private void DrawPartyStartPositions(Bitmap image, Room r, DirectionEnum dir)
         {
             r.GetStartPositionsByDirection(dir).ForEach(p => {
                 if (p.start_pos != Point.Empty)
@@ -514,7 +514,7 @@ namespace U4Mapper
                 }
             });
         }
-        private void DrawTrigger(Bitmap image, room r, int trigger_index, Color color1, Color color2)
+        private void DrawTrigger(Bitmap image, Room r, int trigger_index, Color color1, Color color2)
         {
             if (r.triggers[trigger_index].tile_1_pos != Point.Empty)
             {
@@ -559,7 +559,7 @@ namespace U4Mapper
             {
                 room_id = room_id + (16 * ((level - 1) / 2));
             }
-            room r = dungeon.rooms[room_id];
+            Room r = dungeon.rooms[room_id];
 
             cbMonsters.Enabled = (r.monsters.Count > 0);
             cbTrigger1.Enabled = (r.triggers.Count > 0);

@@ -8,36 +8,36 @@ using System.Threading.Tasks;
 
 namespace U4Mapper
 {
-    internal class room
+    internal class Room
     {
         public int index;
         public int room_num;
-        public List<room_trigger> triggers;
+        public List<RoomTrigger> triggers;
         public byte[,] room_tiles;
-        public List<room_monster> monsters;
-        public List<room_start_position> start_positions;
+        public List<RoomMonster> monsters;
+        public List<RoomStartPosition> start_positions;
 
-        public room(int room_index, byte[] room_data)
+        public Room(int room_index, byte[] room_data)
         {
             int bSize = 0;
             int bPos = 0;
-            room_monster m;
-            room_trigger _t;
+            RoomMonster m;
+            RoomTrigger _t;
 
             index = room_index;
             room_num = room_index % 16;
 
-            triggers = new List<room_trigger>();
-            monsters= new List<room_monster>();
+            triggers = new List<RoomTrigger>();
+            monsters= new List<RoomMonster>();
             room_tiles = new byte[11, 11];
-            start_positions = new List<room_start_position>();
+            start_positions = new List<RoomStartPosition>();
 
             //read triggers
             bSize = 4;
             Debug.WriteLine("Room id: " + index);
             for (int i = 0; i < 4; i++)
             {
-                _t = new room_trigger(room_data, bPos + (bSize * i));
+                _t = new RoomTrigger(room_data, bPos + (bSize * i));
                 if (_t.tile_num > 0) { triggers.Add(_t); }
             }
             bPos = bSize * 4;
@@ -46,7 +46,7 @@ namespace U4Mapper
             bSize = 1;
             for (int i = 0; i < 16; i++)
             {
-                m = new room_monster(room_data, bPos + (bSize * i));
+                m = new RoomMonster(room_data, bPos + (bSize * i));
                 if (m.monster_type_id > 0)
                 {
                     monsters.Add(m);
@@ -58,19 +58,19 @@ namespace U4Mapper
             bSize = 16;
             for (int i = 0; i < 8; i++)
             {
-                start_positions.Add(new room_start_position(i, DirectionEnum.north, room_data, bPos + i + (bSize * 0)));
+                start_positions.Add(new RoomStartPosition(i, DirectionEnum.north, room_data, bPos + i + (bSize * 0)));
             }
             for (int i = 0; i < 8; i++)
             {
-                start_positions.Add(new room_start_position(i, DirectionEnum.east, room_data, bPos + i + (bSize * 1)));
+                start_positions.Add(new RoomStartPosition(i, DirectionEnum.east, room_data, bPos + i + (bSize * 1)));
             }
             for (int i = 0; i < 8; i++)
             {
-                start_positions.Add(new room_start_position(i, DirectionEnum.south, room_data, bPos + i + (bSize * 2)));
+                start_positions.Add(new RoomStartPosition(i, DirectionEnum.south, room_data, bPos + i + (bSize * 2)));
             }
             for (int i = 0; i < 8; i++)
             {
-                start_positions.Add(new room_start_position(i, DirectionEnum.west, room_data, bPos + i + (bSize * 3)));
+                start_positions.Add(new RoomStartPosition(i, DirectionEnum.west, room_data, bPos + i + (bSize * 3)));
             }
             bPos += 8 * 8;
 
@@ -101,7 +101,7 @@ namespace U4Mapper
         public bool hasTrigger3() { return triggers.Count > 2; }
         public bool hasTrigger4() { return triggers.Count > 3; }
 
-        public List<room_start_position> GetStartPositionsByDirection(DirectionEnum dir)
+        public List<RoomStartPosition> GetStartPositionsByDirection(DirectionEnum dir)
         {
             return start_positions.FindAll(e => e.direction == dir);
         }
