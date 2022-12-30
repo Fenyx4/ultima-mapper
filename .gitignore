@@ -289,3 +289,6 @@ __pycache__/
 *.DNG
 U4Mapper/Maps/CHARSET.EGA
 U4Mapper/Maps/WORLD.MAP
+/U4Mapper/Maps/SHAPES.EGA
+/U4Mapper/Tiles/Ultima_4_-_Tiles.png
+/U4Mapper/Tiles/tiles.png
